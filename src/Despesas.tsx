@@ -72,8 +72,6 @@ export function Despesas(): React.JSX.Element {
     navigate("/login");
   };
 
-  if (loading) return <p>Loading...</p>;
-
   /* ---- TABS ---- */
   interface TabPanelProps {
     children?: React.ReactNode;
@@ -107,6 +105,23 @@ export function Despesas(): React.JSX.Element {
       "aria-controls": `simple-tabpanel-${index}`,
     };
   }
+
+  const totalDespesaPorCategoria = useMemo(() => {
+    return Array.from(
+      new Set(filteredData?.map((despesa) => despesa.categoria))
+    )
+      .map((categoria) => {
+        return {
+          categoria,
+          total: filteredData
+            ?.filter((despesa) => despesa.categoria === categoria)
+            .reduce((acc, despesa) => acc + despesa.valor, 0),
+        };
+      })
+      .sort((a, b) => b.total - a.total);
+  }, [filteredData]);
+
+  if (loading) return <p>Loading...</p>;
 
   return (
     <Container>
@@ -188,31 +203,28 @@ export function Despesas(): React.JSX.Element {
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
-          {Array.from(
-            new Set(filteredData?.map((despesa) => despesa.categoria))
-          ).map((categoria) => (
+          Categorias
+          {totalDespesaPorCategoria.map((categoria) => (
             <TableRow
-              key={categoria}
+              key={categoria.categoria}
               style={{
                 width: "100%",
                 display: "flex",
                 justifyContent: "space-between",
               }}
             >
-              <TableCell>{categoria}</TableCell>
+              <TableCell>{categoria.categoria}</TableCell>
               <TableCell>
-                {filteredData
-                  ?.filter((despesa) => despesa.categoria === categoria)
-                  .reduce((acc, despesa) => acc + despesa.valor, 0)
-                  .toLocaleString("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  })}
+                {categoria.total.toLocaleString("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                })}
               </TableCell>
             </TableRow>
           ))}
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
+          Detalhes
           <Table>
             <TableHead>
               <TableRow>
