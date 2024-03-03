@@ -22,24 +22,28 @@ export const LoginComponent = (): React.JSX.Element => {
     <div>
       <h2>Login</h2>
       <span>Digite os seus dados de acesso nos campos abaixo.</span>
-      <div>
-        <label>Email:</label>
-        <input
-          type="email"
-          value={email}
-          placeholder="meuemail@email.com.br"
-          onChange={handleEmailChange}
-        />
-      </div>
-      <div>
-        <label>Password:</label>
-        <input
-          type="password"
-          value={password}
-          placeholder="******"
-          onChange={handlePasswordChange}
-        />
-      </div>
+      <form onSubmit={handleLogin}>
+        <div>
+          <label>Email:</label>
+          <input
+            type="email"
+            value={email}
+            placeholder="meuemail@email.com.br"
+            onChange={handleEmailChange}
+            autoComplete="username"
+          />
+        </div>
+        <div>
+          <label>Password:</label>
+          <input
+            type="password"
+            value={password}
+            placeholder="******"
+            onChange={handlePasswordChange}
+            autoComplete="current-password"
+          />
+        </div>
+      </form>
       <button onClick={handleLogin}>Login</button>
     </div>
   );
