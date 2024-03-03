@@ -1,5 +1,4 @@
 import React from "react";
-import useAxios from "axios-hooks";
 import {
   Container,
   FormControl,
@@ -19,15 +18,6 @@ import {
 } from "@mui/material";
 import { useDespesasContainer } from "./hooks/useDespesasContainer";
 
-interface DespesaItem {
-  id: number;
-  descricao: string;
-  categoria: string;
-  valor: number;
-  mes: string;
-  dia: string;
-}
-
 export function Despesas(): React.JSX.Element {
   const {
     year,
@@ -40,9 +30,9 @@ export function Despesas(): React.JSX.Element {
     years,
     totalDespesaPorCategoria,
     handleLogout,
+    loading,
   } = useDespesasContainer();
 
-  const [{ loading }] = useAxios<DespesaItem[]>("/despesas");
   interface TabPanelProps {
     children?: React.ReactNode;
     index: number;

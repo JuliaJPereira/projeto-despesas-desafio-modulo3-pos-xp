@@ -13,13 +13,13 @@ export const useDespesasContainer = () => {
     dia: string;
   }
 
-  const [{ data }] = useAxios<DespesaItem[]>("/despesas");
+  const [{ data, loading }] = useAxios<DespesaItem[]>("/despesas");
   const [year, setYear] = React.useState("");
   const [month, setMonth] = React.useState("");
   const navigate = useNavigate();
   const [value, setValue] = React.useState(0);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (_: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
@@ -55,13 +55,6 @@ export const useDespesasContainer = () => {
     navigate("/login");
   };
 
-  function a11yProps(index: number) {
-    return {
-      id: `simple-tab-${index}`,
-      "aria-controls": `simple-tabpanel-${index}`,
-    };
-  }
-
   const totalDespesaPorCategoria = useMemo(() => {
     return Array.from(
       new Set(filteredData?.map((despesa) => despesa.categoria))
@@ -88,6 +81,6 @@ export const useDespesasContainer = () => {
     handleChange,
     totalDespesaPorCategoria,
     handleLogout,
-    a11yProps,
+    loading,
   };
 }
