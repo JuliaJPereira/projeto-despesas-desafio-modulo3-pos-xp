@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export const LoginComponent = (): React.JSX.Element => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -12,9 +15,31 @@ export const LoginComponent = (): React.JSX.Element => {
     setPassword(event.target.value);
   };
 
-  const handleLogin = () => {
-    // Perform login logic here
+  const handleLogin: React.FormEventHandler<HTMLFormElement> = async event => {
+    try {
+      event.preventDefault();
+      await axios.post('/sessao/criar', {
+        email,
+        senha: password,
+      });
+      navigate('/despesas');
+    } catch (error) {
+      alert('Usuário ou senha inválidos');
+    }
   };
+
+  const verifySession = async () => {
+    try {
+      await axios.get('/sessao/usuario');
+      navigate('/despesas');
+    } finally {
+      // do nothing
+    }
+  };
+
+  useEffect(() => {
+    verifySession();
+  }, []);
 
   return (
     <div>
@@ -41,8 +66,8 @@ export const LoginComponent = (): React.JSX.Element => {
             autoComplete="current-password"
           />
         </div>
+        <button type="submit">Login</button>
       </form>
-      <button onClick={handleLogin}>Login</button>
     </div>
   );
 };
