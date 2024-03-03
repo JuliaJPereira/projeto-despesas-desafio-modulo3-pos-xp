@@ -13,6 +13,8 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 interface DespesaItem {
   id: number;
@@ -27,6 +29,7 @@ export function Despesas(): React.JSX.Element {
   const [{ data, loading }] = useAxios<DespesaItem[]>('/despesas');
   const [year, setYear] = React.useState('');
   const [month, setMonth] = React.useState('');
+  const navigate = useNavigate();
 
   const { filteredData, years } = useMemo(() => {
     const filteredData =
@@ -54,10 +57,19 @@ export function Despesas(): React.JSX.Element {
     };
   }, [data, year, month]);
 
+  const handleLogout = async () => {
+    alert('tchauuu');
+    await axios.post('/sessao/finalizar');
+    navigate('/login');
+  };
+
   if (loading) return <p>Loading...</p>;
 
   return (
     <Container>
+      <div style={{ cursor: 'pointer' }}>
+        <button onClick={handleLogout}>Sair</button>
+      </div>
       <h1 style={{ textAlign: 'center' }}>Despesas</h1>
 
       <Grid container spacing={2} style={{ marginBottom: 60 }}>
