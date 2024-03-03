@@ -74,8 +74,7 @@ export function Despesas(): React.JSX.Element {
 
   if (loading) return <p>Loading...</p>;
 
-  /* ---------- */
-
+  /* ---- TABS ---- */
   interface TabPanelProps {
     children?: React.ReactNode;
     index: number;
@@ -177,32 +176,47 @@ export function Despesas(): React.JSX.Element {
           </span>
         </Grid>
       </Grid>
-
-      <Box
-        id="julia"
-        sx={{ width: "100%" }}
-        style={{ display: "flex", justifyContent: "center" }}
-      >
+      <Box sx={{ width: "100%" }}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs
             value={value}
             onChange={handleChange}
             aria-label="basic tabs example"
           >
-            <Tab label="Item One" {...a11yProps(0)} />
-            <Tab label="Item Two" {...a11yProps(1)} />
-            <Tab label="Item Three" {...a11yProps(2)} />
+            <Tab label="Resumo" {...a11yProps(0)} />
+            <Tab label="Detalhes" {...a11yProps(1)} />
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
-          Item One
+          {Array.from(
+            new Set(filteredData?.map((despesa) => despesa.categoria))
+          ).map((categoria) => (
+            <TableRow
+              key={categoria}
+              style={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <TableCell>{categoria}</TableCell>
+              <TableCell>
+                {filteredData
+                  ?.filter((despesa) => despesa.categoria === categoria)
+                  .reduce((acc, despesa) => acc + despesa.valor, 0)
+                  .toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  })}
+              </TableCell>
+            </TableRow>
+          ))}
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
-          Item Two
+          Detalhes
         </CustomTabPanel>
       </Box>
-
-      <Table>
+      {/* <Table>
         <TableHead>
           <TableRow>
             <TableCell>Despesa</TableCell>
@@ -226,7 +240,7 @@ export function Despesas(): React.JSX.Element {
             </TableRow>
           ))}
         </TableBody>
-      </Table>
+      </Table> */}
     </Container>
   );
 }
