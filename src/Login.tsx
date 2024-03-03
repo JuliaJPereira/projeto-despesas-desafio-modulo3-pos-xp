@@ -6,12 +6,10 @@ export const LoginComponent = (): React.JSX.Element => {
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
-    console.log('juliaEmail', event.target.value);
   };
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
-    console.log('juliaSenha', event.target.value);
   };
 
   const handleLogin = () => {
