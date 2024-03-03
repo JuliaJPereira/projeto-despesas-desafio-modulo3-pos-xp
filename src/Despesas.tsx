@@ -12,9 +12,13 @@ import {
   TableCell,
   TableHead,
   TableRow,
-} from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+  Box,
+  Tab,
+  Tabs,
+  Typography,
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 interface DespesaItem {
   id: number;
@@ -26,16 +30,21 @@ interface DespesaItem {
 }
 
 export function Despesas(): React.JSX.Element {
-  const [{ data, loading }] = useAxios<DespesaItem[]>('/despesas');
-  const [year, setYear] = React.useState('');
-  const [month, setMonth] = React.useState('');
+  const [{ data, loading }] = useAxios<DespesaItem[]>("/despesas");
+  const [year, setYear] = React.useState("");
+  const [month, setMonth] = React.useState("");
   const navigate = useNavigate();
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
 
   const { filteredData, years } = useMemo(() => {
     const filteredData =
-      data?.filter(despesa => {
-        const currentYear = despesa.mes.split('-')[0];
-        const currentMonth = despesa.mes.split('-')[1];
+      data?.filter((despesa) => {
+        const currentYear = despesa.mes.split("-")[0];
+        const currentMonth = despesa.mes.split("-")[1];
 
         return (
           (!year || currentYear === year) && (!month || currentMonth === month)
@@ -44,8 +53,8 @@ export function Despesas(): React.JSX.Element {
 
     const years: string[] = [];
 
-    data?.forEach(despesa => {
-      const currentMonth = despesa.mes.split('-')[0];
+    data?.forEach((despesa) => {
+      const currentMonth = despesa.mes.split("-")[0];
       if (!years.includes(currentMonth)) {
         years.push(currentMonth);
       }
@@ -58,19 +67,54 @@ export function Despesas(): React.JSX.Element {
   }, [data, year, month]);
 
   const handleLogout = async () => {
-    alert('tchauuu');
-    await axios.post('/sessao/finalizar');
-    navigate('/login');
+    alert("tchauuu");
+    await axios.post("/sessao/finalizar");
+    navigate("/login");
   };
 
   if (loading) return <p>Loading...</p>;
 
+  /* ---------- */
+
+  interface TabPanelProps {
+    children?: React.ReactNode;
+    index: number;
+    value: number;
+  }
+
+  function CustomTabPanel(props: TabPanelProps) {
+    const { children, value, index, ...other } = props;
+
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`simple-tabpanel-${index}`}
+        aria-labelledby={`simple-tab-${index}`}
+        {...other}
+      >
+        {value === index && (
+          <Box sx={{ p: 3 }}>
+            <Typography>{children}</Typography>
+          </Box>
+        )}
+      </div>
+    );
+  }
+
+  function a11yProps(index: number) {
+    return {
+      id: `simple-tab-${index}`,
+      "aria-controls": `simple-tabpanel-${index}`,
+    };
+  }
+
   return (
     <Container>
-      <div style={{ cursor: 'pointer' }}>
+      <div style={{ cursor: "pointer" }}>
         <button onClick={handleLogout}>Sair</button>
       </div>
-      <h1 style={{ textAlign: 'center' }}>Despesas</h1>
+      <h1 style={{ textAlign: "center" }}>Despesas</h1>
 
       <Grid container spacing={2} style={{ marginBottom: 60 }}>
         <Grid item xs={8}>
@@ -81,10 +125,10 @@ export function Despesas(): React.JSX.Element {
               id="year-select"
               label="Ano"
               value={year}
-              onChange={v => setYear(v.target.value)}
+              onChange={(v) => setYear(v.target.value)}
               style={{ width: 100 }}
             >
-              {years.map(year => (
+              {years.map((year) => (
                 <MenuItem key={year} value={year}>
                   {year}
                 </MenuItem>
@@ -98,7 +142,7 @@ export function Despesas(): React.JSX.Element {
               id="month-select"
               label="Mês"
               value={month}
-              onChange={v => setMonth(v.target.value)}
+              onChange={(v) => setMonth(v.target.value)}
               style={{ width: 100 }}
             >
               <MenuItem value="">Todos</MenuItem>
@@ -120,19 +164,43 @@ export function Despesas(): React.JSX.Element {
         <Grid
           item
           xs={4}
-          style={{ display: 'flex', justifyContent: 'flex-end' }}
+          style={{ display: "flex", justifyContent: "flex-end" }}
         >
           <span>
-            Despesa total:{' '}
+            Despesa total:{" "}
             {filteredData
               ?.reduce((acc, x) => acc + x.valor, 0)
-              .toLocaleString('pt-BR', {
-                style: 'currency',
-                currency: 'BRL',
+              .toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL",
               })}
           </span>
         </Grid>
       </Grid>
+
+      <Box
+        id="julia"
+        sx={{ width: "100%" }}
+        style={{ display: "flex", justifyContent: "center" }}
+      >
+        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            aria-label="basic tabs example"
+          >
+            <Tab label="Item One" {...a11yProps(0)} />
+            <Tab label="Item Two" {...a11yProps(1)} />
+            <Tab label="Item Three" {...a11yProps(2)} />
+          </Tabs>
+        </Box>
+        <CustomTabPanel value={value} index={0}>
+          Item One
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={1}>
+          Item Two
+        </CustomTabPanel>
+      </Box>
 
       <Table>
         <TableHead>
@@ -144,15 +212,15 @@ export function Despesas(): React.JSX.Element {
           </TableRow>
         </TableHead>
         <TableBody>
-          {filteredData?.map(despesa => (
+          {filteredData?.map((despesa) => (
             <TableRow key={despesa.id}>
               <TableCell>{despesa.descricao}</TableCell>
               <TableCell>{despesa.categoria}</TableCell>
               <TableCell>{despesa.dia}</TableCell>
               <TableCell>
-                {despesa.valor.toLocaleString('pt-BR', {
-                  style: 'currency',
-                  currency: 'BRL',
+                {despesa.valor.toLocaleString("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
                 })}
               </TableCell>
             </TableRow>
