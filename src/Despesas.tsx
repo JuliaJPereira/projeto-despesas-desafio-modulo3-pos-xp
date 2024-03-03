@@ -213,34 +213,35 @@ export function Despesas(): React.JSX.Element {
           ))}
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
-          Detalhes
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Despesa</TableCell>
+                <TableCell>Categoria</TableCell>
+                <TableCell>Dia</TableCell>
+                <TableCell>Valor (R$)</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredData
+                ?.sort((a, b) => b.valor - a.valor) // Sort by highest value
+                .map((despesa) => (
+                  <TableRow key={despesa.id}>
+                    <TableCell>{despesa.descricao}</TableCell>
+                    <TableCell>{despesa.categoria}</TableCell>
+                    <TableCell>{despesa.dia}</TableCell>
+                    <TableCell>
+                      {despesa.valor.toLocaleString("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      })}
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
         </CustomTabPanel>
       </Box>
-      {/* <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Despesa</TableCell>
-            <TableCell>Categoria</TableCell>
-            <TableCell>Dia</TableCell>
-            <TableCell>Valor (R$)</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {filteredData?.map((despesa) => (
-            <TableRow key={despesa.id}>
-              <TableCell>{despesa.descricao}</TableCell>
-              <TableCell>{despesa.categoria}</TableCell>
-              <TableCell>{despesa.dia}</TableCell>
-              <TableCell>
-                {despesa.valor.toLocaleString("pt-BR", {
-                  style: "currency",
-                  currency: "BRL",
-                })}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table> */}
     </Container>
   );
 }
