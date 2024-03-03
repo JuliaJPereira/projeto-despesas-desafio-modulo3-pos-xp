@@ -1,10 +1,11 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Despesas } from './Despesas';
 import { LoginComponent } from './Login';
+import './axios-configure';
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: '/login',
     element: <LoginComponent />,
   },
   {
