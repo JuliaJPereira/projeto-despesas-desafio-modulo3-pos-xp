@@ -24,9 +24,7 @@ interface DespesaItem {
 }
 
 export function Despesas(): React.JSX.Element {
-  const [{ data, loading, error }] = useAxios<DespesaItem[]>(
-    'https://confirmed-maroon-dingo.glitch.me/api/despesas'
-  );
+  const [{ data, loading }] = useAxios<DespesaItem[]>('/despesas');
   const [year, setYear] = React.useState('');
   const [month, setMonth] = React.useState('');
 
@@ -57,8 +55,6 @@ export function Despesas(): React.JSX.Element {
   }, [data, year, month]);
 
   if (loading) return <p>Loading...</p>;
-
-  if (error) return <p>Error!</p>;
 
   return (
     <Container>
